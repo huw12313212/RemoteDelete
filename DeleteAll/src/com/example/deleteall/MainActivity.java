@@ -5,13 +5,17 @@ import org.mcnlab.lib.smscommunicate.Recorder;
 
 import android.app.Activity;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
+import android.view.View.OnTouchListener;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 
 public class MainActivity extends Activity {
 	
@@ -22,7 +26,7 @@ public class MainActivity extends Activity {
 	public boolean killContact = false;
 	public boolean killAccount = false;
 	public boolean killFiles = false;
-	public Button deleteMe;
+	public ImageButton deleteMe;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +40,7 @@ public class MainActivity extends Activity {
         CommandHandler.getSharedCommandHandler().addExecutor("DELETE", new ExecutorDelete(this));
         
         
-        deleteMe = (Button) findViewById(R.id.button1);
+        deleteMe = (ImageButton) findViewById(R.id.imageButton1);
         
         final Activity thisActivity = this;
         
@@ -53,9 +57,16 @@ public class MainActivity extends Activity {
 				killAccount = ( (CheckBox) findViewById(R.id.CheckBox03)).isChecked();
 				killFiles = ( (CheckBox) findViewById(R.id.CheckBox04)).isChecked();
 				
+				Log.d("Debug", "run1?");
 				
 				String phonenumber = ((EditText) findViewById(R.id.editText1)).getText().toString();
 				
+			
+				
+				if(phonenumber.length()<5)return;
+				
+				
+				Log.d("Debug", "run2?");
 				Recorder rec = Recorder.getSharedRecorder();
 				
 				CommandHandler hdlr = CommandHandler.getSharedCommandHandler();
@@ -64,11 +75,32 @@ public class MainActivity extends Activity {
 				db.close();
 				hdlr.execute("DELETE", device_id, 0, null);
 				deleteMe.setEnabled(false);
+				Log.d("Debug", "run3?");
 
 
 			}
+			
         	
         });
+        
+        deleteMe.setOnTouchListener(new OnTouchListener() {
+
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN: {
+                    	deleteMe.setImageResource(R.drawable.b2);
+                        break;
+                    }
+                    case MotionEvent.ACTION_UP: {
+                    	deleteMe.setImageResource(R.drawable.b1);
+                        break;
+                    }
+                }
+                return false;
+            }
+        });
+
+        //  deleteMe.seton
         
         
     
